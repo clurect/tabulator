@@ -301,7 +301,7 @@ Row.prototype.initialize = function(force){
 			cell.cellRendered();
 		});
 
-		if(force){
+		if(!self.table.options.fixedRowHeight && force){
 			self.normalizeHeight();
 		}
 
@@ -350,18 +350,24 @@ Row.prototype.reinitialize = function(){
 //get heights when doing bulk row style calcs in virtual DOM
 Row.prototype.calcHeight = function(){
 
-	var maxHeight = 0,
+	var maxHeight = this.table.options.fixedRowHeight ? this.table.options.fixedRowHeight : 0,
 	minHeight = this.table.options.resizableRows ? this.element.clientHeight : 0;
 
-	this.cells.forEach(function(cell){
-		var height = cell.getHeight();
-		if(height > maxHeight){
-			maxHeight = height;
-		}
-	});
+	if (!this.table.options.fixedRowHeight) {
+		this.cells.forEach(function(cell){
+			var height = cell.getHeight();
+			if(height > maxHeight){
+				maxHeight = height;
+			}
+		});
 
-	this.height = Math.max(maxHeight, minHeight);
-	this.outerHeight = this.element.offsetHeight;
+		this.height = Math.max(maxHeight, minHeight);
+		this.outerHeight = this.element.offsetHeight;
+	}
+	else {
+		this.height = Math.max(maxHeight, minHeight);
+		this.outerHeight = this.height;
+	}
 };
 
 //set of cells
@@ -409,7 +415,12 @@ Row.prototype.setHeight = function(height, force){
 		this.setCellHeight();
 
 		// this.outerHeight = this.element.outerHeight();
-		this.outerHeight = this.element.offsetHeight;
+		if (this.table.options.fixedRowHeight) {
+			this.outerHeight = this.table.options.fixedRowHeight;
+		}
+		else {
+			this.outerHeight = this.element.offsetHeight;
+		}
 	}
 };
 

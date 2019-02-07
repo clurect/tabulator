@@ -41,6 +41,7 @@ Tabulator.prototype.defaultOptions = {
 
 	resizableColumns:true, //resizable columns
 	resizableRows:false, //resizable rows
+	fixedRowHeight: false, //keep the height of the rows set
 	autoResize:true, //auto resize table
 
 	columns:[],//store for colum header info
