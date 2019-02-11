@@ -1457,23 +1457,25 @@ RowManager.prototype._addTopRow = function(topDiff, i=0){
 };
 
 RowManager.prototype._removeTopRow = function(topDiff){
-	var table = this.tableElement,
-	topRow = this.getDisplayRows()[this.vDomTop],
-	topRowHeight = topRow.getHeight() || this.vDomRowHeight;
+	if (this.vDomTop < this.getDisplayRows().length) {
+		var table = this.tableElement,
+		topRow = this.getDisplayRows()[this.vDomTop],
+		topRowHeight = topRow.getHeight() || this.vDomRowHeight;
 
-	if(topDiff >= topRowHeight){
+		if(topDiff >= topRowHeight){
 
-		var rowEl = topRow.getElement();
-		rowEl.parentNode.removeChild(rowEl);
+			var rowEl = topRow.getElement();
+			rowEl.parentNode.removeChild(rowEl);
 
-		this.vDomTopPad += topRowHeight;
-		table.style.paddingTop = this.vDomTopPad + "px";
-		this.vDomScrollPosTop += this.vDomTop ? topRowHeight : topRowHeight + this.vDomWindowBuffer;
-		this.vDomTop++;
+			this.vDomTopPad += topRowHeight;
+			table.style.paddingTop = this.vDomTopPad + "px";
+			this.vDomScrollPosTop += this.vDomTop ? topRowHeight : topRowHeight + this.vDomWindowBuffer;
+			this.vDomTop++;
 
-		topDiff = this.scrollTop - this.vDomScrollPosTop;
+			topDiff = this.scrollTop - this.vDomScrollPosTop;
 
-		this._removeTopRow(topDiff);
+			this._removeTopRow(topDiff);
+		}
 	}
 
 };
