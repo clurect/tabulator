@@ -12,6 +12,10 @@ CellComponent.prototype.getOldValue = function(){
 	return this._cell.getOldValue();
 };
 
+CellComponent.prototype.getOriginalValue = function () {
+	return this._cell.getOriginalValue();
+};
+
 CellComponent.prototype.getElement = function(){
 	return this._cell.getElement();
 };
@@ -42,6 +46,10 @@ CellComponent.prototype.setValue = function(value, mutate){
 
 CellComponent.prototype.restoreOldValue = function(){
 	this._cell.setValueActual(this._cell.getOldValue());
+};
+
+CellComponent.prototype.restoreOriginalValue = function () {
+	this._cell.setValueActual(this._cell.getOriginalValue());
 };
 
 CellComponent.prototype.edit = function(force){
@@ -79,6 +87,7 @@ var Cell = function(column, row){
 	this.element = null;
 	this.value = null;
 	this.oldValue = null;
+	this.originalValue = null;
 
 	this.height = null;
 	this.width = null;
@@ -355,6 +364,9 @@ Cell.prototype.getOldValue = function(){
 	return this.oldValue;
 };
 
+Cell.prototype.getOriginalValue = function () {
+	return this.originalValue;
+};
 //////////////////// Actions ////////////////////
 
 Cell.prototype.setValue = function(value, mutate){
@@ -413,6 +425,10 @@ Cell.prototype.setValueActual = function(value){
 	this.oldValue = this.value;
 
 	this.value = value;
+
+	if (!this.originalValue) {
+		this.originalValue = value;
+	}
 
 	this.column.setFieldValue(this.row.data, value);
 
