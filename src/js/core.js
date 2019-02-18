@@ -1028,6 +1028,13 @@ Tabulator.prototype.setColumnLayout = function(layout){
 	return false;
 };
 
+//has the least amount of info needed to save the sort, use setSort works to set it
+Tabulator.prototype.getColumnSort = function () {
+	if (this.modExists("persistence", true)) {
+		return this.modules.persistence.validateSorters(this.modules.sort.getSort());
+	}
+};
+
 Tabulator.prototype.showColumn = function(field){
 	var column = this.columnManager.findColumn(field);
 
