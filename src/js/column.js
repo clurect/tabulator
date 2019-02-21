@@ -110,6 +110,14 @@ ColumnComponent.prototype.setHeaderFilterValue = function(value){
 	}
 };
 
+ColumnComponent.prototype.getNextColumn = function(){
+	return this._column.nextColumn().getComponent();
+};
+
+ColumnComponent.prototype.getPrevColumn = function(){
+	return this._column.prevColumn().getComponent();
+};
+
 
 
 var Column = function(def, parent){
@@ -145,7 +153,12 @@ var Column = function(def, parent){
 		cellContext:false,
 		cellTap:false,
 		cellDblTap:false,
-		cellTapHold:false
+		cellTapHold:false,
+		cellMouseEnter:false,
+		cellMouseLeave:false,
+		cellMouseOver:false,
+		cellMouseOut:false,
+		cellMouseMove:false,
 	};
 
 	this.width = null; //column width
@@ -415,6 +428,27 @@ Column.prototype._bindEvents = function(){
 		self.cellEvents.cellContext = def.cellContext;
 	}
 
+	//store column mouse event bindings
+	if(typeof(def.cellMouseEnter) == "function"){
+		self.cellEvents.cellMouseEnter = def.cellMouseEnter;
+	}
+
+	if(typeof(def.cellMouseLeave) == "function"){
+		self.cellEvents.cellMouseLeave = def.cellMouseLeave;
+	}
+
+	if(typeof(def.cellMouseOver) == "function"){
+		self.cellEvents.cellMouseOver = def.cellMouseOver;
+	}
+
+	if(typeof(def.cellMouseOut) == "function"){
+		self.cellEvents.cellMouseOut = def.cellMouseOut;
+	}
+
+	if(typeof(def.cellMouseMove) == "function"){
+		self.cellEvents.cellMouseMove = def.cellMouseMove;
+	}
+
 	//setup column cell tap event bindings
 	if(typeof(def.cellTap) == "function"){
 		self.cellEvents.cellTap = def.cellTap;
@@ -507,7 +541,7 @@ Column.prototype._buildColumnHeader = function(){
 	}
 
 	//set min width if present
-	self.setMinWidth(typeof def.minWidth == "undefined" ? self.table.options.columnMinWidth : def.minWidth);
+	self.setMinWidth(typeof def.minWidth == "undefined" ? self.table.options.columnMinWidth : parseInt(def.minWidth));
 
 	self.reinitializeWidth();
 
@@ -1020,6 +1054,16 @@ Column.prototype.generateCell = function(row){
 	return cell;
 };
 
+Column.prototype.nextColumn = function(){
+	var index = this.table.columnManager.findColumnIndex(this);
+	return index > -1 ? this.table.columnManager.getColumnByIndex(index + 1) : false;
+};
+
+Column.prototype.prevColumn = function(){
+	var index = this.table.columnManager.findColumnIndex(this);
+	return index > -1 ? this.table.columnManager.getColumnByIndex(index - 1) : false;
+};
+
 Column.prototype.reinitializeWidth = function(force){
 
 	this.widthFixed = false;
@@ -1079,6 +1123,94 @@ Column.prototype.deleteCell = function(cell){
 		this.cells.splice(index, 1);
 	}
 };
+
+Column.prototype.defaultOptionList = [
+	"title",
+	"field",
+	"visible",
+	"align",
+	"width",
+	"minWidth",
+	"widthGrow",
+	"widthShrink",
+	"resizable",
+	"frozen",
+	"responsive",
+	"tooltip",
+	"cssClass",
+	"rowHandle",
+	"hideInHtml",
+	"sorter",
+	"sorterParams",
+	"formatter",
+	"formatterParams",
+	"variableHeight",
+	"editable",
+	"editor",
+	"editorParams",
+	"validator",
+	"mutator",
+	"mutatorParams",
+	"mutatorData",
+	"mutatorDataParams",
+	"mutatorEdit",
+	"mutatorEditParams",
+	"mutatorClipboard",
+	"mutatorClipboardParams",
+	"accessor",
+	"accessorParams",
+	"accessorData",
+	"accessorDataParams",
+	"accessorDownload",
+	"accessorDownloadParams",
+	"accessorClipboard",
+	"accessorClipboardParams",
+	"download",
+	"downloadTitle",
+	"topCalc",
+	"topCalcParams",
+	"topCalcFormatter",
+	"topCalcFormatterParams",
+	"bottomCalc",
+	"bottomCalcParams",
+	"bottomCalcFormatter",
+	"bottomCalcFormatterParams",
+	"cellClick",
+	"cellDblClick",
+	"cellContext",
+	"cellTap",
+	"cellDblTap",
+	"cellTapHold",
+	"cellMouseEnter",
+	"cellMouseLeave",
+	"cellMouseOver",
+	"cellMouseOut",
+	"cellMouseMove",
+	"cellEditing",
+	"cellEdited",
+	"cellEditCancelled",
+	"headerSort",
+	"headerSortStartingDir",
+	"headerSortTristate",
+	"headerClick",
+	"headerDblClick",
+	"headerContext",
+	"headerTap",
+	"headerDblTap",
+	"headerTapHold",
+	"headerTooltip",
+	"headerVertical",
+	"editableTitle",
+	"titleFormatter",
+	"titleFormatterParams",
+	"headerFilter",
+	"headerFilterPlaceholder",
+	"headerFilterParams",
+	"headerFilterEmptyCheck",
+	"headerFilterFunc",
+	"headerFilterFuncParams",
+	"headerFilterLiveFilter",
+];
 
 //////////////// Event Bindings /////////////////
 
