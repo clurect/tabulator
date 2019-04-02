@@ -1,4 +1,4 @@
-/* Tabulator v4.2.1 (c) Oliver Folkerd */
+/* Tabulator v4.2.3 (c) Oliver Folkerd */
 .tabulator {
   position: relative;
   background-color: white;
@@ -49,7 +49,7 @@
 
 .tabulator .tabulator-header .tabulator-col.tabulator-moving {
   position: absolute;
-  background: transparent;
+  background: rgba(0, 0, 0, 0);
   pointer-events: none;
 }
 
@@ -141,7 +141,7 @@
 
 .tabulator .tabulator-header .tabulator-col.tabulator-sortable:hover {
   cursor: pointer;
-  background-color: transparent;
+  background-color: rgba(0, 0, 0, 0);
 }
 
 .tabulator .tabulator-header .tabulator-col.tabulator-sortable[aria-sort="none"] .tabulator-col-content .tabulator-arrow {
@@ -752,24 +752,24 @@
   border-bottom: 0;
 }
 
-.tabulator-row.tabulator-group.tabulator-group-level-1 .tabulator-arrow {
-  margin-left: 20px;
+.tabulator-row.tabulator-group.tabulator-group-level-1 {
+  padding-left: 30px;
 }
 
-.tabulator-row.tabulator-group.tabulator-group-level-2 .tabulator-arrow {
-  margin-left: 40px;
+.tabulator-row.tabulator-group.tabulator-group-level-2 {
+  padding-left: 50px;
 }
 
-.tabulator-row.tabulator-group.tabulator-group-level-3 .tabulator-arrow {
-  margin-left: 60px;
+.tabulator-row.tabulator-group.tabulator-group-level-3 {
+  padding-left: 70px;
 }
 
-.tabulator-row.tabulator-group.tabulator-group-level-4 .tabulator-arrow {
-  margin-left: 80px;
+.tabulator-row.tabulator-group.tabulator-group-level-4 {
+  padding-left: 90px;
 }
 
-.tabulator-row.tabulator-group.tabulator-group-level-5 .tabulator-arrow {
-  margin-left: 100px;
+.tabulator-row.tabulator-group.tabulator-group-level-5 {
+  padding-left: 110px;
 }
 
 .tabulator-row.tabulator-group .tabulator-arrow {
