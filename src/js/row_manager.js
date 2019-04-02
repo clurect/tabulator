@@ -117,24 +117,29 @@ RowManager.prototype.initialize = function(){
 
 	//handle virtual dom scrolling
 	if(this.renderMode === "virtual"){
-
-		self.element.addEventListener("scroll", function(){
-			var top = self.element.scrollTop;
-			var dir = self.scrollTop > top;
-
-			//handle verical scrolling
-			if(self.scrollTop != top){
-				self.scrollTop = top;
-				self.scrollVertical(dir);
-
-				if(self.table.options.ajaxProgressiveLoad == "scroll"){
-					self.table.modules.ajax.nextPage(self.element.scrollHeight - self.element.clientHeight - top);
-				}
-			}else{
-				self.scrollTop = top;
-			}
-
+		self.didScroll = false;
+		self.element.addEventListener("scroll", function () {
+			self.didScroll = true;
 		});
+		self.scrollTicker = setInterval(function () {
+			if (self.didScroll) {
+				self.didScroll = false;
+				var top = self.element.scrollTop;
+				var dir = self.scrollTop > top;
+
+				//handle verical scrolling
+				if (self.scrollTop != top) {
+					self.scrollTop = top;
+					self.scrollVertical(dir);
+
+					if (self.table.options.ajaxProgressiveLoad == "scroll") {
+						self.table.modules.ajax.nextPage(self.element.scrollHeight - self.element.clientHeight - top);
+					}
+				} else {
+					self.scrollTop = top;
+				}
+			}
+		}, 100);
 	}
 };
 
@@ -854,7 +859,7 @@ RowManager.prototype.sorterRefresh = function(loadOrignalData){
 
 RowManager.prototype.scrollHorizontal = function(left){
 	this.scrollLeft = left;
-	this.element.scrollLeft = left;
+	//this.element.scrollLeft = left;
 
 	if(this.table.options.groupBy){
 		this.table.modules.groupRows.scrollHeaders(left);
@@ -1161,7 +1166,9 @@ RowManager.prototype.renderTable = function(){
 		break;
 
 		case "virtual":
-		self._virtualRenderFill();
+		setTimeout(function () {
+			self._virtualRenderFill();
+		}, 10);
 		break;
 	}
 
@@ -1431,7 +1438,10 @@ RowManager.prototype.scrollVertical = function(dir){
 			}
 
 			if(bottomDiff >= 0){
-				this._addBottomRow(bottomDiff);
+				var update = () => {
+					this._addBottomRow(bottomDiff);
+				}
+				requestAnimationFrame(update)
 			}
 		}
 	}

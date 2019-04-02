@@ -44,6 +44,14 @@ CellComponent.prototype.setValue = function(value, mutate){
 	this._cell.setValue(value, mutate);
 };
 
+CellComponent.prototype.setOriginalValue = function (value) {
+	this._cell.setOriginalValue(value);
+};
+
+CellComponent.prototype.clearOldValue = function () {
+	this._cell.clearOldValue();
+};
+
 CellComponent.prototype.restoreOldValue = function(){
 	this._cell.setValueActual(this._cell.getOldValue());
 };
@@ -487,6 +495,14 @@ Cell.prototype.setValue = function(value, mutate){
 		this.table.options.dataEdited.call(this.table, this.table.rowManager.getData());
 	}
 
+};
+
+Cell.prototype.setOriginalValue = function (value) {
+	this.originalValue = value;
+};
+
+Cell.prototype.clearOldValue = function () {
+	this.oldValue = null;
 };
 
 Cell.prototype.setValueProcessData = function(value, mutate){
