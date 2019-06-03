@@ -69,7 +69,12 @@ SelectRow.prototype.initializeRow = function(row){
 					else if(e.ctrlKey){
 						self.toggleRow(row);
 						self.lastClickedRow = row;
-					}else{
+					}
+					else if(e.metaKey){
+						self.toggleRow(row);
+						self.lastClickedRow = row;
+					}
+					else{
 						self.deselectRows();
 						self.selectRows(row);
 						self.lastClickedRow = row;

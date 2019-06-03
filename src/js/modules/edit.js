@@ -119,9 +119,13 @@ Edit.prototype.bindEditor = function(cell){
 
 	element.addEventListener("mousedown", function(e){
 		self.mouseClick = true;
+		console.log('moucheclick')
+		console.log(e)
+		self.openevent = e;
 	});
 
 	element.addEventListener("focus", function(e){
+		console.log(e);
 		if(!self.recursionBlock){
 			self.edit(cell, e, false);
 		}

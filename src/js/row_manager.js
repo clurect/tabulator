@@ -117,24 +117,32 @@ RowManager.prototype.initialize = function(){
 
 	//handle virtual dom scrolling
 	if(this.renderMode === "virtual"){
+		self.didScroll = false;
+		
+		function handleScroll() {
+			if (self.didScroll) {
+				self.didScroll = false;
+				var top = self.element.scrollTop;
+				var dir = self.scrollTop > top;
 
-		self.element.addEventListener("scroll", function(){
-			var top = self.element.scrollTop;
-			var dir = self.scrollTop > top;
+				//handle verical scrolling
+				if (self.scrollTop != top) {
+					self.scrollTop = top;
+					self.scrollVertical(dir);
 
-			//handle verical scrolling
-			if(self.scrollTop != top){
-				self.scrollTop = top;
-				self.scrollVertical(dir);
-
-				if(self.table.options.ajaxProgressiveLoad == "scroll"){
-					self.table.modules.ajax.nextPage(self.element.scrollHeight - self.element.clientHeight - top);
+					if (self.table.options.ajaxProgressiveLoad == "scroll") {
+						self.table.modules.ajax.nextPage(self.element.scrollHeight - self.element.clientHeight - top);
+					}
+				} else {
+					self.scrollTop = top;
 				}
-			}else{
-				self.scrollTop = top;
 			}
-
+		}
+		self.element.addEventListener("scroll", function(){
+			self.didScroll = true;
+			
 		});
+		self.scrollTimeout = setInterval(handleScroll, 100);
 	}
 };
 
@@ -1158,43 +1166,47 @@ RowManager.prototype.renderTable = function(){
 	self.table.options.renderStarted.call(this.table);
 
 	self.element.scrollTop = 0;
+	function afterRender() {
+		if (self.firstRender) {
+			if (self.displayRowsCount) {
+				self.firstRender = false;
+				self.table.modules.layout.layout();
+			} else {
+				self.renderEmptyScroll();
+			}
+		}
 
+		if (self.table.modExists("frozenColumns")) {
+			self.table.modules.frozenColumns.layout();
+		}
+
+
+		if (!self.displayRowsCount) {
+			if (self.table.options.placeholder) {
+
+				if (self.renderMode) {
+					self.table.options.placeholder.setAttribute("tabulator-render-mode", self.renderMode);
+				}
+
+				self.getElement().appendChild(self.table.options.placeholder);
+			}
+		}
+
+		self.table.options.renderComplete.call(self.table);
+	}
 	switch(self.renderMode){
 		case "classic":
 		self._simpleRender();
+		afterRender();
 		break;
 
 		case "virtual":
 		self._virtualRenderFill();
+		afterRender();
 		break;
 	}
 
-	if(self.firstRender){
-		if(self.displayRowsCount){
-			self.firstRender = false;
-			self.table.modules.layout.layout();
-		}else{
-			self.renderEmptyScroll();
-		}
-	}
-
-	if(self.table.modExists("frozenColumns")){
-		self.table.modules.frozenColumns.layout();
-	}
-
-
-	if(!self.displayRowsCount){
-		if(self.table.options.placeholder){
-
-			if(this.renderMode){
-				self.table.options.placeholder.setAttribute("tabulator-render-mode", this.renderMode);
-			}
-
-			self.getElement().appendChild(self.table.options.placeholder);
-		}
-	}
-
-	self.table.options.renderComplete.call(this.table);
+	
 };
 
 //simple render on heightless table
@@ -1494,23 +1506,25 @@ RowManager.prototype._addTopRow = function(topDiff, i=0){
 };
 
 RowManager.prototype._removeTopRow = function(topDiff){
-	var table = this.tableElement,
-	topRow = this.getDisplayRows()[this.vDomTop],
-	topRowHeight = topRow.getHeight() || this.vDomRowHeight;
+	if (this.vDomTop < this.getDisplayRows().length) {
+		var table = this.tableElement,
+		topRow = this.getDisplayRows()[this.vDomTop],
+		topRowHeight = topRow.getHeight() || this.vDomRowHeight;
 
-	if(topDiff >= topRowHeight){
+		if(topDiff >= topRowHeight){
 
-		var rowEl = topRow.getElement();
-		rowEl.parentNode.removeChild(rowEl);
+			var rowEl = topRow.getElement();
+			rowEl.parentNode.removeChild(rowEl);
 
-		this.vDomTopPad += topRowHeight;
-		table.style.paddingTop = this.vDomTopPad + "px";
-		this.vDomScrollPosTop += this.vDomTop ? topRowHeight : topRowHeight + this.vDomWindowBuffer;
-		this.vDomTop++;
+			this.vDomTopPad += topRowHeight;
+			table.style.paddingTop = this.vDomTopPad + "px";
+			this.vDomScrollPosTop += this.vDomTop ? topRowHeight : topRowHeight + this.vDomWindowBuffer;
+			this.vDomTop++;
 
-		topDiff = this.scrollTop - this.vDomScrollPosTop;
+			topDiff = this.scrollTop - this.vDomScrollPosTop;
 
-		this._removeTopRow(topDiff);
+			this._removeTopRow(topDiff);
+		}
 	}
 
 };
