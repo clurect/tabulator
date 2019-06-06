@@ -79,6 +79,8 @@ var Cell = function(column, row){
 	this.element = null;
 	this.value = null;
 	this.oldValue = null;
+	/* clurect change */
+	this.originalValue = null;
 
 	this.height = null;
 	this.width = null;
@@ -510,6 +512,11 @@ Cell.prototype.setValueActual = function(value){
 	this.oldValue = this.value;
 
 	this.value = value;
+
+	/* clurect change */
+	if (!this.originalValue) {
+		this.originalValue = value;
+	}
 
 	if(this.table.options.reactiveData && this.table.modExists("reactiveData")){
 		this.table.modules.reactiveData.block();
