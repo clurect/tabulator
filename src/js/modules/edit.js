@@ -119,6 +119,8 @@ Edit.prototype.bindEditor = function(cell){
 
 	element.addEventListener("mousedown", function(e){
 		self.mouseClick = true;
+		/* clurect change */
+		self.openevent = e;
 	});
 
 	element.addEventListener("focus", function(e){

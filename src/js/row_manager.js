@@ -117,8 +117,10 @@ RowManager.prototype.initialize = function(){
 
 	//handle virtual dom scrolling
 	if(this.renderMode === "virtual"){
+		/* clurect change */
+		self.didScroll = false;
 
-		self.element.addEventListener("scroll", function(){
+		function handleScroll() {
 			var top = self.element.scrollTop;
 			var dir = self.scrollTop > top;
 
@@ -133,8 +135,17 @@ RowManager.prototype.initialize = function(){
 			}else{
 				self.scrollTop = top;
 			}
-
+		}
+		function scrollInterval() {
+			if (self.didScroll) {
+				self.didScroll = false;
+				handleScroll();
+			}
+		}
+		self.element.addEventListener("scroll", function () {
+			self.didScroll = true;
 		});
+		self.scrollTimeout = setInterval(scrollInterval, 100);
 	}
 };
 
@@ -1508,6 +1519,11 @@ RowManager.prototype._addTopRow = function(topDiff, i=0){
 };
 
 RowManager.prototype._removeTopRow = function(topDiff){
+	/* clurect change */
+	if (this.vDomTop < this.getDisplayRows().length) {
+		// prevents an error from happening
+		return;
+	}
 	var table = this.tableElement,
 	topRow = this.getDisplayRows()[this.vDomTop],
 	topRowHeight = topRow.getHeight() || this.vDomRowHeight;

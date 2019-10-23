@@ -26,3 +26,4 @@
 /*=include modules/select_row.js */
 /*=include modules/sort.js */
 /*=include modules/validate.js */
+/*=include modules/addons.js */
