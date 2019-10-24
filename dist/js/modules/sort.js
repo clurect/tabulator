@@ -143,7 +143,10 @@ Sort.prototype.getSort = function () {
 Sort.prototype.setSort = function (sortList, dir) {
 	var self = this,
 	    newSortList = [];
-
+	/* clurect change */
+	if (!sortList) {
+		sortList = this.sortList;
+	}
 	if (!Array.isArray(sortList)) {
 		sortList = [{ column: sortList, dir: dir }];
 	}
