@@ -59,7 +59,9 @@ Tabulator.prototype.defaultOptions = {
 
 	initialSort:false, //initial sorting criteria
 	initialFilter:false, //initial filtering criteria
-	initialHeaderFilter:false, //initial header filtering criteria
+	initialHeaderFilter: false, //initial header filtering criteria
+	/* clurect changes */
+	initialLayout: false, //initial layout criteria
 
 	columnHeaderSortMulti: true, //multiple or single column sorting
 
@@ -507,6 +509,10 @@ Tabulator.prototype._buildElement = function(){
 		this.modules.frozenRows.initialize();
 	}
 
+	/* clurect change */
+	if (options.initialLayout && this.modExists("persistence", true)) {
+		this.columnManager.setColumns(this.modules.persistence.mergeDefinition(options.columns, options.initialLayout));
+	}
 	if((options.persistentSort || options.initialSort) && this.modExists("sort", true)){
 		var sorters = [];
 
